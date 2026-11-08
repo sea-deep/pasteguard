@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Inspect Tampermonkey scripts before installing them. Follow payment-address changes into a Solana devnet transfer comparison.">
+  <meta name="theme-color" content="#f5f1e7">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <title>PasteGuard — Userscript investigation</title>
+  <script type="module" crossorigin src="./assets/index-CEp57FLu.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-D2mPWefm.css">
+</head>
+<body>
+  <a class="skip" href="#workbench">Skip to scanner</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="./" aria-label="PasteGuard home">
+        <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><path fill="currentColor" d="M0 0h32v32H0z"/><path fill="none" stroke="#f6dc65" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" d="M16 6.8 24 10v6c0 4.7-3.1 7.7-8 9.8-4.9-2.1-8-5.1-8-9.8v-6zM13 16l2 2 4-4"/></svg>
+        <span>PasteGuard<span class="brand-period">.</span></span>
+      </a>
+      <nav aria-label="Resources"><a href="#case-notes">Scam cases</a><a href="#extension">Chrome extension</a><a class="source-link" href="https://github.com/sea-deep/pasteguard" target="_blank" rel="noopener noreferrer">Source <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="intro" id="start" aria-labelledby="title">
+      <div>
+        <h1 id="title">Before you paste.</h1>
+        <p class="intro-copy">A free crypto bonus can hide a wallet swap. Inspect the userscript, see which lines matter, and follow the payment on Solana.</p>
+      </div>
+      <div class="intro-art"><div class="coupon" aria-label="Scam case study based on a fake 25 percent loyalty bonus">
+        <div class="coupon-main"><span class="coupon-label">THE LURE</span><strong>+25<span>%</span></strong><span>Loyalty bonus</span></div>
+        <div class="coupon-stub"><span>CASE PG–01</span><span class="coupon-stamp">FAKE</span></div>
+      </div><span class="mascot-slot" data-stop="start"></span></div>
+    </section>
+
+    <section id="workbench" class="workbench" aria-labelledby="bench-title">
+      <div class="section-head">
+        <div><h2 id="bench-title">Script workbench</h2><p>Scan before installing a Tampermonkey userscript.</p></div>
+        <div class="section-aside"><span class="local-label"><i data-lucide="shield-check" aria-hidden="true"></i> Scans stay on this device</span><span class="mascot-slot" data-stop="workbench"></span></div>
+      </div>
+      <div class="work-grid">
+        <div class="source-pane">
+          <div class="source-actions" aria-label="Choose source">
+            <button type="button" data-sample="scam" aria-pressed="true">Scam example</button>
+            <button type="button" data-sample="benign" aria-pressed="false">Benign example</button>
+            <button type="button" id="paste-source" aria-pressed="false">Paste your own</button>
+          </div>
+          <div class="editor-frame">
+            <div class="editor-header"><span id="file-name"></span><button type="button" id="edit-source">Edit source</button></div>
+            <label class="sr-only" for="source">Userscript source</label>
+            <textarea id="source" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="60000" placeholder="Paste JavaScript source here…" hidden></textarea>
+            <div id="code-list" class="code-list" tabindex="0" aria-label="Source with highlighted evidence"></div>
+          </div>
+          <div class="scan-row">
+            <button type="button" class="primary" id="scan">Scan script <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+            <span>Local analysis. Pasted code stays here.</span>
+          </div>
+        </div>
+        <div class="findings-pane">
+          <div class="findings-head"><h3>Findings</h3><span id="finding-count" class="finding-count">—</span></div>
+          <p id="scan-status" class="scan-status" role="status"></p>
+          <ol id="findings" class="findings"></ol>
+          <p class="findings-note">These are code signals. A clean scan can miss hidden behavior.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="transfer" id="transfer" aria-labelledby="transfer-title">
+      <div class="section-head">
+        <div><h2 id="transfer-title">Follow the payment</h2><p>Compare an independently verified recipient with the address found in the code.</p></div>
+        <div class="section-aside"><span class="network-label"><svg width="18" height="16" viewBox="0 0 18 16" aria-hidden="true"><path fill="currentColor" d="M4 1h13l-3 3H1zm-3 6h13l3 3H4zm3 6h13l-3 3H1z"/></svg> Solana devnet</span><span class="mascot-slot" data-stop="transfer"></span></div>
+      </div>
+      <div class="recipient-grid">
+        <div class="recipient expected">
+          <div class="recipient-heading"><label for="expected">Expected recipient</label><span id="expected-tag" class="recipient-tag">Demo baseline</span></div>
+          <input id="expected" type="text" spellcheck="false" autocomplete="off" maxlength="44" aria-describedby="expected-help" placeholder="Enter verified Solana address">
+          <span class="recipient-help" id="expected-help">Use a wallet address verified outside the script.</span>
+          <div class="recipient-result" id="expected-result" hidden></div>
+        </div>
+        <div class="recipient observed">
+          <div class="recipient-heading"><label for="observed">Address found in code</label><span id="observed-tag" class="recipient-tag">Source evidence</span></div>
+          <select id="observed" aria-describedby="observed-help"></select>
+          <span class="recipient-help" id="observed-help"></span>
+          <div class="recipient-result" id="observed-result" hidden></div>
+        </div>
+      </div>
+      <div class="transfer-actions">
+        <button type="button" class="primary" id="simulate">Simulate both transfers <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+        <span id="transfer-status" role="status"></span>
+      </div>
+      <p class="simulation-note" id="simulation-note">Two independent 0.01 SOL test transfers. Public devnet receives only the unsigned transfer messages for simulation.</p>
+    </section>
+
+    <section id="case-notes" class="case-notes" aria-labelledby="cases-title">
+      <div class="section-head">
+        <div><h2 id="cases-title">The scam files</h2><p>Real campaign screenshots, plus harmless reconstructions to inspect.</p></div>
+        <span class="mascot-slot" data-stop="case-notes"></span>
+      </div>
+      <div class="case-grid">
+        <article class="case-file">
+          <div class="case-meta"><span>01 / Fake swap bonus</span><i data-lucide="badge-percent" aria-hidden="true"></i></div>
+          <a class="case-image paste-image" href="./evidence/pastebin.webp" target="_blank" rel="noopener" aria-label="Open the redacted Pastebin screenshot"><img src="./evidence/pastebin.webp" alt="Redacted Pastebin comment claiming to have leaked exploit documentation and made $13,000 in two days" loading="lazy" width="900" height="132"></a>
+          <h3>The loyalty bonus trap</h3>
+          <p>A Pastebin comment promised higher swap payouts. The userscript changed the wallet address and showed a fake bonus.</p>
+          <details><summary>See the injected bonus screen</summary><a href="./evidence/bonus.webp" target="_blank" rel="noopener"><img src="./evidence/bonus.webp" alt="Fake loyalty bonus dialog injected into a Bitcoin swap page" loading="lazy" width="900" height="360"></a></details>
+          <div class="case-links"><button type="button" data-case="scam">Inspect example <i data-lucide="arrow-up-right" aria-hidden="true"></i></button><a href="https://blog.talosintelligence.com/clickfix-moves-into-the-browser/" target="_blank" rel="noopener noreferrer">Cisco Talos <i data-lucide="external-link" aria-hidden="true"></i></a></div>
+        </article>
+        <article class="case-file">
+          <div class="case-meta"><span>02 / Clipboard hijack</span><i data-lucide="clipboard-copy" aria-hidden="true"></i></div>
+          <a class="case-image" href="./evidence/clipboard.webp" target="_blank" rel="noopener" aria-label="Open the fake Solana sniper bot screenshot"><img src="./evidence/clipboard.webp" alt="Phishing site offering a free Solana sniper and trading bot download" loading="lazy" width="900" height="466"></a>
+          <h3>The free Solana sniper</h3>
+          <p>A fake trading tool used inflated social proof to spread a desktop program that replaced wallet addresses on the clipboard.</p>
+          <div class="case-links"><button type="button" data-case="clipboard">Inspect browser analogue <i data-lucide="arrow-up-right" aria-hidden="true"></i></button><a href="https://research.checkpoint.com/2026/from-stars-to-upvotes-fake-reputation-fueling-a-crypto-clipboard-hijacker/" target="_blank" rel="noopener noreferrer">Check Point Research <i data-lucide="external-link" aria-hidden="true"></i></a></div>
+        </article>
+        <article class="case-file">
+          <div class="case-meta"><span>03 / Fake compiler</span><i data-lucide="terminal" aria-hidden="true"></i></div>
+          <a class="case-image" href="./evidence/bot2.webp" target="_blank" rel="noopener" aria-label="Open the fake compiler tutorial screenshot"><img src="./evidence/bot2.webp" alt="Video tutorial showing a fake compiler alongside a MetaMask transaction prompt" loading="lazy" width="900" height="492"></a>
+          <h3>The AI arbitrage bot</h3>
+          <p>A tutorial sent viewers to a fake Solidity compiler. It deployed different bytecode that forwarded their ETH.</p>
+          <div class="case-links"><button type="button" data-case="bot">Inspect browser analogue <i data-lucide="arrow-up-right" aria-hidden="true"></i></button><a href="https://www.trmlabs.com/resources/blog/fake-ai-trading-bots-are-getting-victims-to-build-their-own-drainers" target="_blank" rel="noopener noreferrer">TRM Labs <i data-lucide="external-link" aria-hidden="true"></i></a></div>
+        </article>
+      </div>
+    </section>
+
+    <footer id="extension" class="extension-note">
+      <div>
+        <h2>Inspect from Chrome</h2>
+        <p>Select code on Pastebin, GitHub Gist, Greasy Fork, or a supported paste site. Right-click and choose <strong>Inspect selected source with PasteGuard</strong>.</p>
+        <p>Unzip the download, then turn on Developer mode at <code>chrome://extensions</code> and choose <strong>Load unpacked</strong>.</p>
+      </div>
+      <a class="primary" href="https://github.com/sea-deep/pasteguard/releases/latest/download/pasteguard-chrome.zip">Download extension <i data-lucide="download" aria-hidden="true"></i></a>
+    </footer>
+    <div id="pip" class="mascot" aria-hidden="true">
+      <svg viewBox="0 0 64 60" width="53" height="50" fill="none">
+        <path d="M46 45c6 6 13 0 12-6" stroke="#24221e" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M19 49c0-6 4-12 13-12 7 0 12 5 12 12v5H19z" fill="#e3a967" stroke="#24221e" stroke-width="2"/>
+        <circle cx="16" cy="21" r="9" fill="#e3a967" stroke="#24221e" stroke-width="2.1"/><circle cx="47" cy="21" r="9" fill="#e3a967" stroke="#24221e" stroke-width="2.1"/>
+        <path d="M14 26c0-11 7-17 18-17s18 7 18 17c0 11-8 17-18 17s-18-6-18-17Z" fill="#e3a967" stroke="#24221e" stroke-width="2.1"/>
+        <path d="M18 31c0-7 5-12 10-11 2 0 3 1 4 2 1-1 2-2 4-2 6-1 10 4 10 11 0 6-6 9-14 9s-14-3-14-9Z" fill="#fff1d1"/>
+        <path d="M17 14c3-7 9-11 15-11 5 0 10 3 13 9l-10 3-7-1-11 3z" fill="#f6dc65" stroke="#24221e" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M19 17c9-1 18-2 28-1" stroke="#24221e" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="25" cy="28" r="1.8" fill="#24221e"/><circle cx="38" cy="28" r="1.8" fill="#24221e"/>
+        <path d="M29 33c1.5 2.3 4.5 2.3 6 0" stroke="#24221e" stroke-width="1.7" stroke-linecap="round"/>
+        <circle cx="43" cy="34" r="2" fill="#e5a482"/><circle cx="21" cy="34" r="2" fill="#e5a482"/>
+        <path d="m22 50-3 4m21-4 3 4" stroke="#24221e" stroke-width="2.1" stroke-linecap="round"/>
+      </svg>
+      <span>Pip</span>
+    </div>
+  </main>
+</body>
+</html>
