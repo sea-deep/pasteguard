@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.playwright/
+test-results/
+.env*
+.DS_Store
+.impeccable/
+
+dist-extension/
+artifacts/
