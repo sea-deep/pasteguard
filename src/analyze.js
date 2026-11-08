@@ -9,6 +9,7 @@ export const lineBreaks = /\r\n|[\n\r\u2028\u2029]/;
 const recipientFields = /^(?:depositAddress|destinationAddress|recipient(?:Address)?|walletAddress|toAddress)$/i;
 const browserObjects = /^(?:window|globalThis|unsafeWindow|self)$/;
 const walletMethods = /^(?:eth_sendTransaction|eth_sign|personal_sign|eth_signTypedData(?:_v[134])?|signTransaction|signAllTransactions|signAndSendTransaction|signMessage)$/;
+const disguisedHosts = /^https?:\/\/(?:[\w-]+\.)*(?:drive\.google\.com|docs\.google\.com|script\.google\.com|script\.googleusercontent\.com|googleusercontent\.com|pastebin\.com|gist\.githubusercontent\.com|raw\.githubusercontent\.com|telegra\.ph|dropbox\.com|dropboxusercontent\.com)(?:[\/:?#]|$)/i;
 const secretFields = /(?:seed[-_ ]?phrase|secret[-_ ]?recovery[-_ ]?phrase|mnemonic|private[-_ ]?key)/i;
 
 function propertyName(node) {
@@ -108,6 +109,10 @@ export function analyze(source) {
       const line = index + 1;
       if (!match || (ast && !commentLines.has(line))) continue;
       const [, directive, value] = match;
+      if (directive === 'require' && disguisedHosts.test(value.trim())) {
+        add('disguised', line, 'Code loaded from a file-sharing link',
+          'The dependency comes from a document or paste link, not a code library. Whoever controls that link can change the code at any time.', 'high');
+      }
       if (directive === 'require') {
         add('remote', line, 'External code dependency',
           'Tampermonkey can load this dependency before the script runs. Its contents were not inspected.', 'high');
@@ -142,6 +147,9 @@ export function analyze(source) {
           if (name && recipientFields.test(name) && address && node.operator === '=') {
             add('recipient', line, 'Payment field overwritten',
               `This assignment sets ${name} to a hard-coded ${address.network} address.`, 'high', address);
+          } else if (name && recipientFields.test(name) && node.operator === '=' && literalString(right) === null) {
+            add('recipient-runtime', line, 'Payment field set at runtime',
+              `${name} is filled with a value decided while the script runs, for example one downloaded from a remote link. The wallet never appears in the code.`, 'high');
           }
         },
         CallExpression(node) {
@@ -181,6 +189,19 @@ export function analyze(source) {
           }
           if (name === 'GM_xmlhttpRequest' || (name === 'xmlHttpRequest' && propertyName(callee.object) === 'GM')) {
             add('request', line, 'Privileged network request', 'This call can make a cross-origin request using userscript permissions.');
+          }
+        },
+        Literal(node) {
+          if (typeof node.value === 'string' && disguisedHosts.test(node.value)) {
+            add('disguised', node.loc.start.line, 'File-sharing link in code',
+              'The script contacts a Google Drive, Docs, Sheets, Pastebin or similar link. Scams use these to deliver the attacker wallet or more code after you install.', 'high');
+          }
+        },
+        TemplateLiteral(node) {
+          const text = node.quasis[0]?.value.cooked ?? '';
+          if (disguisedHosts.test(text)) {
+            add('disguised', node.loc.start.line, 'File-sharing link in code',
+              'The script contacts a Google Drive, Docs, Sheets, Pastebin or similar link. Scams use these to deliver the attacker wallet or more code after you install.', 'high');
           }
         },
         NewExpression(node) {
