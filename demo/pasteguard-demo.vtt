@@ -1,0 +1,40 @@
+WEBVTT
+
+00:00:00.228 --> 00:00:03.278
+This is PasteGuard for the MLH Solana Hackathon.
+
+00:00:03.278 --> 00:00:06.964
+A Pastebin post promised a twenty-five percent swap bonus.
+
+00:00:06.964 --> 00:00:10.141
+The script changed where victims sent their money.
+
+00:00:10.865 --> 00:00:13.478
+PasteGuard scans the source on your device.
+
+00:00:13.478 --> 00:00:19.676
+It points to the remote dependency, the network hook, and the line that overwrites the deposit wallet.
+
+00:00:19.676 --> 00:00:23.079
+You can inspect each line before giving a script access.
+
+00:00:23.770 --> 00:00:28.043
+Here is where the money would go. The transfers use the same amount.
+
+00:00:28.043 --> 00:00:33.824
+Solana devnet simulates both and shows a point zero one SOL credit to two different wallets.
+
+00:00:33.824 --> 00:00:36.337
+Neither transfer is signed or broadcast.
+
+00:00:37.027 --> 00:00:45.806
+The case files include the original Pastebin lure, a fake Solana sniper, an AI arbitrage compiler, and a fake wallet recovery prompt.
+
+00:00:45.806 --> 00:00:51.351
+The screenshots are real. The scripts in the workbench are harmless reconstructions.
+
+00:00:52.069 --> 00:00:58.125
+In Chrome, select suspicious code on a paste site and choose Inspect selected source with PasteGuard.
+
+00:00:58.125 --> 00:01:02.022
+You can also paste it into the web app and download the findings.
