@@ -1,41 +1,43 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:03.007
+00:00:00.234 --> 00:00:02.926
 This is PasteGuard for the MLH Solana Hackathon.
 
-00:00:03.344 --> 00:00:06.409
-A Pastebin post promised a twenty-five percent swap bonus.
+00:00:02.926 --> 00:00:06.695
+A Pastebin comment promised twenty-five percent more on a crypto swap.
 
-00:00:06.745 --> 00:00:08.963
-The script quietly changed the deposit wallet.
+00:00:06.695 --> 00:00:10.033
+To get the bonus, it told you to paste code into Tampermonkey.
 
-00:00:09.413 --> 00:00:11.491
-PasteGuard reads the script on your device.
+00:00:10.753 --> 00:00:13.534
+Tampermonkey lets scripts change the web pages you visit.
 
-00:00:11.828 --> 00:00:17.586
-It points to the remote dependency, the browser network hook, and the exact line that swaps the address.
+00:00:13.534 --> 00:00:15.778
+Here, the script replaced the deposit address.
 
-00:00:18.036 --> 00:00:19.360
-Here is where the money would go.
+00:00:15.778 --> 00:00:19.437
+The exchange still looked familiar, but a payment would go to the attacker.
 
-00:00:19.650 --> 00:00:21.960
-Solana devnet simulates both transfers.
+00:00:20.123 --> 00:00:22.388
+PasteGuard reads the code without running it.
 
-00:00:22.250 --> 00:00:23.911
-Same amount, two different wallets.
+00:00:22.388 --> 00:00:26.114
+Click a finding to see the exact line that overwrites the deposit address.
 
-00:00:24.305 --> 00:00:27.742
-We can see the balance changes without a signature or a broadcast.
+00:00:26.804 --> 00:00:28.584
+Now compare the two destinations.
 
-00:00:28.192 --> 00:00:37.294
-The case library covers four real campaigns: the original Pastebin lure, a fake Solana sniper, a phony AI compiler, and a seed phrase trap.
+00:00:28.584 --> 00:00:31.927
+Solana devnet simulates the same payment once for each wallet.
 
-00:00:37.744 --> 00:00:40.902
-Paste code into the web app, or scan a selection from Chrome.
+00:00:31.927 --> 00:00:33.383
+These are balance previews.
 
-00:00:41.355 --> 00:00:43.700
-We built this in one day as a hackathon prototype.
+00:00:33.383 --> 00:00:35.163
+No transaction is signed or sent.
 
-00:00:44.037 --> 00:00:47.729
-The campaign screenshots are real, and the devnet preview is live.
+00:00:35.848 --> 00:00:37.473
+We built PasteGuard in one day.
 
+00:00:37.473 --> 00:00:42.350
+Try the safe reconstruction, paste your own script, or open one of the four documented cases.
