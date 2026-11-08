@@ -60,6 +60,7 @@
           <p id="scan-status" class="scan-status" role="status"></p>
           <ol id="findings" class="findings"></ol>
           <p class="findings-note">These are code signals. A clean scan can miss hidden behavior.</p>
+          <button type="button" id="export-report" class="secondary" disabled>Download findings <i data-lucide="download" aria-hidden="true"></i></button>
         </div>
       </div>
     </section>
@@ -98,10 +99,10 @@
       <div class="case-grid">
         <article class="case-file">
           <div class="case-meta"><span>01 / Fake swap bonus</span><i data-lucide="badge-percent" aria-hidden="true"></i></div>
-          <a class="case-image paste-image" href="./evidence/pastebin.webp" target="_blank" rel="noopener" aria-label="Open the redacted Pastebin screenshot"><img src="./evidence/pastebin.webp" alt="Redacted Pastebin comment claiming to have leaked exploit documentation and made $13,000 in two days" loading="lazy" width="900" height="132"></a>
+          <a class="case-image bonus-image" href="./evidence/bonus.webp" target="_blank" rel="noopener" aria-label="Open the injected bonus screen"><img src="./evidence/bonus.webp" alt="Fake loyalty bonus dialog injected into a Bitcoin swap page" loading="lazy" width="900" height="360"></a>
           <h3>The loyalty bonus trap</h3>
           <p>A Pastebin comment promised higher swap payouts. The userscript changed the wallet address and showed a fake bonus.</p>
-          <details><summary>See the injected bonus screen</summary><a href="./evidence/bonus.webp" target="_blank" rel="noopener"><img src="./evidence/bonus.webp" alt="Fake loyalty bonus dialog injected into a Bitcoin swap page" loading="lazy" width="900" height="360"></a></details>
+          <details><summary>See the Pastebin lure</summary><a href="./evidence/pastebin.webp" target="_blank" rel="noopener"><img src="./evidence/pastebin.webp" alt="Pastebin comment claiming to have leaked an exploit, with the link redacted" loading="lazy" width="900" height="177"></a></details>
           <div class="case-links"><button type="button" data-case="scam">Inspect example <i data-lucide="arrow-up-right" aria-hidden="true"></i></button><a href="https://blog.talosintelligence.com/clickfix-moves-into-the-browser/" target="_blank" rel="noopener noreferrer">Cisco Talos <i data-lucide="external-link" aria-hidden="true"></i></a></div>
         </article>
         <article class="case-file">
@@ -117,6 +118,13 @@
           <h3>The AI arbitrage bot</h3>
           <p>A tutorial sent viewers to a fake Solidity compiler. It deployed different bytecode that forwarded their ETH.</p>
           <div class="case-links"><button type="button" data-case="bot">Inspect browser analogue <i data-lucide="arrow-up-right" aria-hidden="true"></i></button><a href="https://www.trmlabs.com/resources/blog/fake-ai-trading-bots-are-getting-victims-to-build-their-own-drainers" target="_blank" rel="noopener noreferrer">TRM Labs <i data-lucide="external-link" aria-hidden="true"></i></a></div>
+        </article>
+        <article class="case-file">
+          <div class="case-meta"><span>04 / Recovery phishing</span><i data-lucide="key-round" aria-hidden="true"></i></div>
+          <a class="case-image recovery-image" href="./evidence/recovery.webp" target="_blank" rel="noopener" aria-label="Open the fake wallet recovery screenshot"><img src="./evidence/recovery.webp" alt="Phishing window in a fake Ledger app asking for wallet recovery words" loading="lazy" width="768" height="831"></a>
+          <h3>The wallet “security check”</h3>
+          <p>A fake Ledger app prompted users to verify their recovery phrases and sent the entered words to an attacker.</p>
+          <div class="case-links"><button type="button" data-case="recovery">Inspect browser analogue <i data-lucide="arrow-up-right" aria-hidden="true"></i></button><a href="https://securelist.com/fakewallet-cryptostealer-ios-app-store/119474/" target="_blank" rel="noopener noreferrer">Securelist <i data-lucide="external-link" aria-hidden="true"></i></a></div>
         </article>
       </div>
     </section>

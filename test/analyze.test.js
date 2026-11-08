@@ -80,3 +80,24 @@ test('compiled transfers have the same payer and amount but different recipients
 test('devnet simulation rejects invalid input before making a request', async () => {
   await assert.rejects(simulatePair(EXPECTED, 'invalid'), /Both recipients/);
 });
+
+test('identifies the additional campaign patterns and their limits', () => {
+  const clipboard = analyze(SAMPLES.clipboard.source);
+  assert.deepEqual(clipboard.findings.map((item) => item.rule), ['grant', 'clipboard']);
+  assert.equal(clipboard.findings[1].network, 'Solana');
+  const bot = analyze(SAMPLES.bot.source);
+  assert.deepEqual(bot.findings.map((item) => item.rule), ['remote', 'wallet']);
+  assert.equal(bot.findings[1].network, 'EVM');
+  const recovery = analyze(SAMPLES.recovery.source);
+  assert.deepEqual(recovery.findings.map((item) => item.rule), ['secret', 'post']);
+});
+
+test('checks Bitcoin witness addresses and recognizes XHR prototype hooks', () => {
+  const btc = 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4';
+  const result = analyze(`quote.destinationAddress = '${btc}';
+    XMLHttpRequest.prototype.send = function () {};
+    quote.destinationAddress = '${btc.slice(0, -1)}0';
+  `);
+  assert.deepEqual(result.findings.map((item) => item.rule), ['recipient', 'hook']);
+  assert.equal(result.findings[0].network, 'Bitcoin');
+});

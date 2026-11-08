@@ -1,5 +1,5 @@
 import '@fontsource-variable/bricolage-grotesque/wght.css';
-import { ArrowUpRight, BadgePercent, ClipboardCopy, createIcons, Download, ExternalLink, ShieldCheck, Terminal } from 'lucide';
+import { ArrowUpRight, BadgePercent, ClipboardCopy, createIcons, Download, ExternalLink, KeyRound, ShieldCheck, Terminal } from 'lucide';
 import '@fontsource-variable/inter/wght.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import './style.css';
@@ -8,7 +8,7 @@ import { EXPECTED, SAMPLES } from './fixtures.js';
 import { isRecipient, simulatePair } from './solana.js';
 import { moveMascot } from './mascot.js';
 
-createIcons({ icons: { ArrowUpRight, BadgePercent, ClipboardCopy, Download, ExternalLink, ShieldCheck, Terminal } });
+createIcons({ icons: { ArrowUpRight, BadgePercent, ClipboardCopy, Download, ExternalLink, KeyRound, ShieldCheck, Terminal } });
 
 const $ = (id) => document.getElementById(id);
 const source = $('source');
@@ -22,6 +22,7 @@ let editing = false;
 let findings = [];
 let candidates = [];
 let simulationController;
+let scanResult;
 
 function node(tag, className, text) {
   const element = document.createElement(tag);
@@ -41,6 +42,8 @@ function chooseSource(name) {
   expected.value = ['scam', 'clipboard'].includes(name) ? EXPECTED : '';
   $('expected-tag').textContent = expected.value ? 'Demo baseline' : 'Your baseline';
   if (name === 'custom') {
+    scanResult = undefined;
+    $('export-report').disabled = true;
     findings = [];
     candidates = [];
     updateFindings('Paste your script to inspect it.');
@@ -118,6 +121,8 @@ function selectFinding(index, scroll) {
 
 function scan() {
   if (!source.value.trim()) {
+    scanResult = undefined;
+    $('export-report').disabled = true;
     findings = [];
     candidates = [];
     updateFindings('Paste a userscript or choose a sample.');
@@ -127,6 +132,8 @@ function scan() {
   }
   const focusWasEditor = document.activeElement === source;
   const result = analyze(source.value);
+  scanResult = result;
+  $('export-report').disabled = false;
   findings = result.findings;
   candidates = [...new Map(findings.filter((item) => item.address).map((item) => [item.address, item])).values()];
   const status = result.error || (findings.length
@@ -225,6 +232,27 @@ async function runSimulation() {
   }
 }
 
+async function exportReport() {
+  if (!scanResult) return;
+  const result = scanResult;
+  const bytes = new TextEncoder().encode(source.value);
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  const sha256 = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+  const report = { tool: 'PasteGuard', sourceSha256: sha256, ...result };
+  const url = URL.createObjectURL(new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' }));
+  const link = node('a');
+  link.href = url;
+  link.download = 'pasteguard-findings.json';
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 5_000);
+}
+
+$('export-report').addEventListener('click', () => {
+  void exportReport().catch(() => {
+    $('scan-status').textContent = 'The browser could not export the report. Try again over HTTPS.';
+  });
+});
+
 $('scan').addEventListener('click', () => {
   scan();
   moveMascot('workbench');
@@ -244,6 +272,8 @@ source.addEventListener('input', () => {
     $('expected-tag').textContent = 'Your baseline';
   }
   if (findings.length || candidates.length || $('scan-status').textContent !== 'Source changed. Scan to refresh the findings.') {
+    scanResult = undefined;
+    $('export-report').disabled = true;
     findings = [];
     candidates = [];
     updateFindings('Source changed. Scan to refresh the findings.');

