@@ -1,40 +1,41 @@
 WEBVTT
 
-00:00:00.233 --> 00:00:03.287
+00:00:00.000 --> 00:00:03.007
 This is PasteGuard for the MLH Solana Hackathon.
 
-00:00:03.287 --> 00:00:06.976
+00:00:03.344 --> 00:00:06.409
 A Pastebin post promised a twenty-five percent swap bonus.
 
-00:00:06.976 --> 00:00:10.157
-The script changed where victims sent their money.
+00:00:06.745 --> 00:00:08.963
+The script quietly changed the deposit wallet.
 
-00:00:10.879 --> 00:00:13.494
-PasteGuard scans the source on your device.
+00:00:09.413 --> 00:00:11.491
+PasteGuard reads the script on your device.
 
-00:00:13.494 --> 00:00:19.698
-It points to the remote dependency, the network hook, and the line that overwrites the deposit wallet.
+00:00:11.828 --> 00:00:17.586
+It points to the remote dependency, the browser network hook, and the exact line that swaps the address.
 
-00:00:19.698 --> 00:00:23.104
-You can inspect each line before giving a script access.
+00:00:18.036 --> 00:00:19.360
+Here is where the money would go.
 
-00:00:23.792 --> 00:00:28.089
-Here is where the money would go. The transfers use the same amount.
+00:00:19.650 --> 00:00:21.960
+Solana devnet simulates both transfers.
 
-00:00:28.089 --> 00:00:33.901
-Solana devnet simulates both and shows a point zero one SOL credit to two different wallets.
+00:00:22.250 --> 00:00:23.911
+Same amount, two different wallets.
 
-00:00:33.901 --> 00:00:36.429
-Neither transfer is signed or broadcast.
+00:00:24.305 --> 00:00:27.742
+We can see the balance changes without a signature or a broadcast.
 
-00:00:37.118 --> 00:00:45.791
-The case files include the original Pastebin lure, a fake Solana sniper, an AI arbitrage compiler, and a fake wallet recovery prompt.
+00:00:28.192 --> 00:00:37.294
+The case library covers four real campaigns: the original Pastebin lure, a fake Solana sniper, a phony AI compiler, and a seed phrase trap.
 
-00:00:45.791 --> 00:00:51.268
-The screenshots are real. The scripts in the workbench are harmless reconstructions.
+00:00:37.744 --> 00:00:40.902
+Paste code into the web app, or scan a selection from Chrome.
 
-00:00:51.999 --> 00:00:58.034
-In Chrome, select suspicious code on a paste site and choose Inspect selected source with PasteGuard.
+00:00:41.355 --> 00:00:43.700
+We built this in one day as a hackathon prototype.
 
-00:00:58.034 --> 00:01:01.917
-You can also paste it into the web app and download the findings.
+00:00:44.037 --> 00:00:47.729
+The campaign screenshots are real, and the devnet preview is live.
+
