@@ -1,6 +1,6 @@
 # PasteGuard
 
-PasteGuard inspects Tampermonkey userscripts before installation. It highlights the lines that request browser privileges, load external code, or manipulate payments, then lets you compare where two Solana transfers would land.
+PasteGuard inspects Tampermonkey userscripts before installation. It highlights the lines that request browser privileges, load external code, or manipulate payments, then lets you compare where two Solana transfers would land. We built it in one day as a hackathon prototype.
 
 - [Live workbench](https://sea-deep.github.io/pasteguard/)
 - [Demo video](https://sea-deep.github.io/pasteguard/demo/)
@@ -50,4 +50,4 @@ Browser verification uses Playwright. Run `npx playwright install chromium`, the
 
 - Kaspersky Securelist, [FakeWallet crypto stealer](https://securelist.com/fakewallet-cryptostealer-ios-app-store/119474/). The recovery prompt shows how a fake wallet asked victims for their seed phrase.
 
-Campaign screenshots are credited to their respective publishers and are excluded from the project code license. Bricolage Grotesque, Inter, and IBM Plex Mono are bundled locally via Fontsource. Interface icons use Lucide.
+The demo is narrated with ElevenLabs. Campaign screenshots are credited to their respective publishers and are excluded from the project code license. Bricolage Grotesque, Inter, and IBM Plex Mono are bundled locally via Fontsource. Interface icons use Lucide.
