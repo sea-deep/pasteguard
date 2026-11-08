@@ -12,7 +12,7 @@ PasteGuard inspects Tampermonkey userscripts before installation. It highlights 
 1. Open the workbench with **Scam example** selected. Click a finding to locate the matching source line.
 2. Under **Follow the payment**, choose **Simulate both transfers**. Solana devnet simulates two independent 0.01 SOL payments. The amount is identical and the recipient differs.
 3. Open **The scam files** to inspect the Pastebin lure and three other documented cases. Choose **Inspect example** to load its sanitized source.
-4. Choose **Benign example** or **Paste your own** to try another script.
+4. Choose **Benign example** or **Paste your own** to try another script. Custom drafts stay in the tab while you switch examples.
 
 ## Chrome extension
 
@@ -38,9 +38,9 @@ Browser verification uses Playwright. Run `npx playwright install chromium`, the
 
 ## How it works
 
-- **Source evidence.** Acorn parses pasted JavaScript as text. Rules inspect userscript metadata, network hooks, privileged requests, clipboard writes, wallet-signing methods, recovery-field selectors, and hard-coded recipient assignments. Each finding points to a line. The downloadable JSON report includes a SHA-256 fingerprint and findings without the original script. Direct literals can be recognized as Solana, EVM-format, or Bech32/Bech32m Bitcoin addresses.
+- **Source evidence.** Acorn parses pasted JavaScript as text. Rules inspect userscript metadata, network hooks, privileged requests, clipboard writes, wallet-signing methods, recovery-field selectors, and hard-coded recipient assignments. Each finding points to a line. The downloadable JSON report includes a SHA-256 fingerprint and findings without the original script. Static literals and simple split strings can be recognized as Solana, EVM-format, or Bech32/Bech32m Bitcoin addresses.
 - **Payment evidence.** Solana Kit builds native SOL transfer messages. The app sends unsigned messages to the public devnet simulation endpoint only when requested. The simulation uses a public devnet account as a hypothetical payer with signature verification disabled. The app has no private key, and broadcasts nothing.
-- **Limits.** This is a heuristic static scanner. Computed or obfuscated addresses, indirect data flow, and remote dependencies may require manual review. A clean scan provides no safety guarantee. Campaign screenshots document real attacks, while the example code is a sanitized reconstruction.
+- **Limits.** This is a heuristic static scanner. Runtime-computed addresses, indirect data flow, and remote dependencies may require manual review. A clean scan provides no safety guarantee. Campaign screenshots document real attacks, while the example code is a sanitized reconstruction.
 
 ## Campaign evidence
 

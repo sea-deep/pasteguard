@@ -101,3 +101,19 @@ test('checks Bitcoin witness addresses and recognizes XHR prototype hooks', () =
   assert.deepEqual(result.findings.map((item) => item.rule), ['recipient', 'hook']);
   assert.equal(result.findings[0].network, 'Bitcoin');
 });
+
+test('finds split static payment addresses and fetch keys without evaluating expressions', () => {
+  const part = REPLACEMENT.slice(0, 17);
+  const source = `window['fe' + 'tch'] = replacement;
+    quote['deposit' + 'Address'] = '${part}' + '${REPLACEMENT.slice(17)}';
+    quote.depositAddress = '${part}' + lookup();
+  `;
+  assert.deepEqual(analyze(source).findings.map(({ rule, address }) => [rule, address]), [
+    ['hook', null], ['recipient', REPLACEMENT],
+  ]);
+});
+
+test('keeps userscript evidence line numbers for lone carriage returns', () => {
+  const source = ['// ==UserScript==', '// @require https://example.invalid/a', '// ==/UserScript==', 'void 0;'].join('\r');
+  assert.equal(analyze(source).findings[0].line, 2);
+});

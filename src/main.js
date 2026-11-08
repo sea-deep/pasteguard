@@ -1,5 +1,5 @@
 import '@fontsource-variable/bricolage-grotesque/wght.css';
-import { ArrowUpRight, BadgePercent, ClipboardCopy, createIcons, Download, ExternalLink, KeyRound, ShieldCheck, Terminal } from 'lucide';
+import { ArrowDown, ArrowUpRight, BadgePercent, ClipboardCopy, createIcons, Download, ExternalLink, KeyRound, ShieldCheck, Terminal } from 'lucide';
 import '@fontsource-variable/inter/wght.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import './style.css';
@@ -8,7 +8,7 @@ import { EXPECTED, SAMPLES } from './fixtures.js';
 import { isRecipient, simulatePair } from './solana.js';
 import { moveMascot } from './mascot.js';
 
-createIcons({ icons: { ArrowUpRight, BadgePercent, ClipboardCopy, Download, ExternalLink, KeyRound, ShieldCheck, Terminal } });
+createIcons({ icons: { ArrowDown, ArrowUpRight, BadgePercent, ClipboardCopy, Download, ExternalLink, KeyRound, ShieldCheck, Terminal } });
 
 const $ = (id) => document.getElementById(id);
 const source = $('source');
@@ -17,12 +17,18 @@ const findingsList = $('findings');
 const expected = $('expected');
 const observed = $('observed');
 const simulate = $('simulate');
+const simulateLabel = $('simulate-label');
+const wrapButton = $('wrap-source');
+const narrowCode = matchMedia('(max-width: 690px)');
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let sample = 'scam';
 let editing = false;
 let findings = [];
 let candidates = [];
 let simulationController;
 let scanResult;
+let customDraft = { source: '', expected: '' };
+let wrapOverride;
 
 function node(tag, className, text) {
   const element = document.createElement(tag);
@@ -32,21 +38,22 @@ function node(tag, className, text) {
 }
 
 function chooseSource(name) {
+  if (sample === 'custom') customDraft = { source: source.value, expected: expected.value };
   sample = name;
   document.querySelectorAll('[data-sample]').forEach((button) => {
     button.setAttribute('aria-pressed', String(button.dataset.sample === name));
   });
   $('paste-source').setAttribute('aria-pressed', String(name === 'custom'));
   $('file-name').textContent = SAMPLES[name]?.name ?? 'pasted-script.user.js';
-  source.value = SAMPLES[name]?.source ?? '';
-  expected.value = ['scam', 'clipboard'].includes(name) ? EXPECTED : '';
-  $('expected-tag').textContent = expected.value ? 'Demo baseline' : 'Your baseline';
+  source.value = SAMPLES[name]?.source ?? customDraft.source;
+  expected.value = name === 'custom' ? customDraft.expected : ['scam', 'clipboard'].includes(name) ? EXPECTED : '';
+  $('expected-tag').textContent = name !== 'custom' && expected.value ? 'Demo baseline' : 'Your baseline';
   if (name === 'custom') {
     scanResult = undefined;
     $('export-report').disabled = true;
     findings = [];
     candidates = [];
-    updateFindings('Paste your script to inspect it.');
+    updateFindings(source.value.trim() ? 'Draft restored. Scan it to see the findings.' : 'Paste a script to get started.');
     updateCandidates();
     setEditing(true, true);
   } else {
@@ -59,19 +66,22 @@ function setEditing(active, focus = false) {
   source.hidden = !active;
   codeList.hidden = active;
   $('edit-source').hidden = active;
+  wrapButton.hidden = active;
+  $('source-hint').textContent = active ? 'Ctrl / ⌘ + Enter to scan' : 'Pasted code stays here.';
   if (focus) source.focus();
 }
 
 function updateFindings(status) {
   $('scan-status').textContent = status;
-  $('finding-count').textContent = findings.length ? String(findings.length).padStart(2, '0') : '—';
+  $('finding-count').textContent = scanResult ? String(findings.length).padStart(2, '0') : '—';
+  $('compare-recipient').hidden = !findings.some((finding) => finding.network === 'Solana' && finding.address);
   const rows = findings.map((finding, index) => {
     const row = node('li');
     const button = node('button', `finding ${finding.severity}`);
     button.type = 'button';
     button.dataset.finding = String(index);
     button.setAttribute('aria-pressed', 'false');
-    const meta = node('span', 'finding-meta', `LINE ${String(finding.line).padStart(2, '0')}`);
+    const meta = node('span', 'finding-meta', `Line ${finding.line}`);
     const heading = node('strong', 'finding-title', finding.title);
     const detail = node('span', 'finding-detail', finding.detail);
     button.append(meta, heading, detail);
@@ -111,8 +121,17 @@ function selectFinding(index, scroll) {
   if (!active) return;
   active.classList.add('selected-line');
   if (scroll) {
-    codeList.scrollTop = Math.max(0, active.offsetTop - codeList.clientHeight / 2);
-    if (findings[index].address) {
+    codeList.scrollTo({
+      top: Math.max(0, active.offsetTop - codeList.clientHeight / 2),
+      left: 0,
+      behavior: reducedMotion.matches ? 'instant' : 'smooth',
+    });
+    const bounds = codeList.getBoundingClientRect();
+    if (narrowCode.matches && (bounds.bottom < 100 || bounds.top > innerHeight - 100)) {
+      codeList.focus({ preventScroll: true });
+      codeList.scrollIntoView({ block: 'center', behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+    }
+    if (findings[index].address && observed.value !== findings[index].address) {
       observed.value = findings[index].address;
       updateTransfer();
     }
@@ -132,14 +151,19 @@ function scan() {
   }
   const focusWasEditor = document.activeElement === source;
   const result = analyze(source.value);
-  scanResult = result;
-  $('export-report').disabled = false;
+  scanResult = result.rejected ? undefined : result;
+  $('export-report').disabled = !scanResult;
   findings = result.findings;
   candidates = [...new Map(findings.filter((item) => item.address).map((item) => [item.address, item])).values()];
   const status = result.error || (findings.length
-    ? 'Select a finding to jump to the source.'
+    ? 'Select a finding to see the matching line.'
     : 'No configured rules matched this source.');
   updateFindings(status);
+  if (result.rejected) {
+    updateCandidates();
+    setEditing(true, true);
+    return;
+  }
   renderCode();
   setEditing(false);
   if (focusWasEditor) codeList.focus();
@@ -153,7 +177,12 @@ function updateCandidates() {
   } else {
     observed.replaceChildren(new Option('No recipient found', ''));
   }
-  observed.disabled = candidates.length < 2;
+  observed.hidden = candidates.length < 2;
+  observed.disabled = observed.hidden;
+  const fixedAddress = $('observed-address');
+  fixedAddress.hidden = !observed.hidden;
+  fixedAddress.textContent = candidates[0]?.address ?? 'No recipient found';
+  $('observed-label').htmlFor = observed.hidden ? 'observed-address' : 'observed';
   updateTransfer();
 }
 
@@ -171,6 +200,7 @@ function updateTransfer() {
   const status = $('transfer-status');
   const ready = isRecipient(base) && evidence?.network === 'Solana' && isRecipient(target);
   simulate.disabled = !ready;
+  simulateLabel.textContent = 'Simulate both transfers';
   status.className = '';
   if (evidence?.network && evidence.network !== 'Solana') {
     status.textContent = `${evidence.network} address detected. The live comparison supports Solana transfers.`;
@@ -209,6 +239,7 @@ async function runSimulation() {
   $('expected-result').hidden = true;
   $('observed-result').hidden = true;
   status.className = '';
+  simulateLabel.textContent = 'Simulating…';
   status.textContent = 'Waiting for Solana devnet…';
   try {
     const [before, after] = await simulatePair(base, target, signal);
@@ -216,9 +247,11 @@ async function runSimulation() {
     showResult('expected-result', before);
     showResult('observed-result', after);
     status.className = base === target ? '' : 'warn';
-    status.textContent = base === target
-      ? 'Simulated · Both transfers credit the same wallet'
-      : 'Simulated · Same amount, different wallets';
+    status.textContent = before.received === null || after.received === null
+      ? 'Simulated · Devnet omitted one or both balance changes'
+      : base === target
+        ? 'Simulated · Both transfers credit the same wallet'
+        : 'Simulated · Same amount, different wallets';
   } catch (error) {
     if (simulationController !== controller) return;
     status.className = 'warn';
@@ -227,6 +260,7 @@ async function runSimulation() {
   } finally {
     if (simulationController === controller) {
       simulate.disabled = false;
+      simulateLabel.textContent = 'Simulate both transfers';
       simulationController = undefined;
     }
   }
@@ -257,6 +291,22 @@ $('scan').addEventListener('click', () => {
   scan();
   moveMascot('workbench');
 });
+function syncWrap() {
+  const wrapped = wrapOverride ?? narrowCode.matches;
+  codeList.dataset.wrap = String(wrapped);
+  wrapButton.setAttribute('aria-pressed', String(wrapped));
+}
+
+wrapButton.addEventListener('click', () => {
+  wrapOverride = codeList.dataset.wrap !== 'true';
+  syncWrap();
+  const active = codeList.querySelector('.selected-line');
+  if (active) codeList.scrollTop = Math.max(0, active.offsetTop - codeList.clientHeight / 2);
+});
+
+narrowCode.addEventListener('change', syncWrap);
+syncWrap();
+
 $('edit-source').addEventListener('click', () => setEditing(true, true));
 $('paste-source').addEventListener('click', () => chooseSource('custom'));
 document.querySelectorAll('[data-sample]').forEach((button) => {
@@ -321,7 +371,9 @@ async function loadExtensionCapture() {
     $('file-name').textContent = 'selected-script.user.js';
     scan();
     if (selection.truncated) {
-      $('scan-status').textContent = 'The browser selection exceeded 60,000 characters. Results cover only the captured excerpt.';
+      const warning = 'The browser selection exceeded 60,000 characters. Results cover only the captured excerpt.';
+      $('scan-status').textContent = warning;
+      if (scanResult) scanResult = { ...scanResult, error: [scanResult.error, warning].filter(Boolean).join(' ') };
     }
   } catch {
     chooseSource('custom');

@@ -206,3 +206,30 @@ svg.lucide { width: 16px; height: 16px; flex: 0 0 auto; }
   .topbar-inner { gap: 11px; }
   .source-actions button { padding-inline: 7px; }
 }
+
+.editor-tools { display: flex; gap: 6px; flex-shrink: 0; }
+.editor-header > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.editor-header button { min-height: 30px; }
+.editor-header button[aria-pressed="true"] { color: var(--signal); border-color: #a6945d; }
+.code-list[data-wrap="true"] .code-line { width: 100%; grid-template-columns: 42px minmax(0, 1fr); }
+.code-list[data-wrap="true"] .code-line > code { white-space: pre-wrap; overflow-wrap: anywhere; }
+.finding-meta { font-variant-numeric: tabular-nums; }
+.finding, .primary, .source-actions button, .secondary { transition: background-color 150ms ease, border-color 150ms ease; }
+.evidence-link {
+  display: flex; width: fit-content; align-items: center; gap: 7px;
+  margin-top: 13px; font-size: .9rem; font-weight: 680; color: var(--rust);
+}
+.wallet-address {
+  display: block; min-height: 37px; padding: 7px 8px; margin-block: 7px 4px;
+  border: 1px solid #b5aa97; background: var(--paper); font: .81rem/1.65 var(--mono);
+  overflow-wrap: anywhere; user-select: all;
+}
+@media (max-width: 690px) {
+  #source { font-size: 16px; }
+  .recipient input, .recipient select { font-size: 16px; }
+  .source-actions button, .primary { min-height: 44px; }
+  .editor-header button { min-height: 35px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .finding, .primary, .source-actions button, .secondary { transition: none; }
+}

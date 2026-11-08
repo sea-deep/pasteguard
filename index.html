@@ -24,7 +24,7 @@
     <section class="intro" id="start" aria-labelledby="title">
       <div>
         <h1 id="title">Before you paste.</h1>
-        <p class="intro-copy">A free crypto bonus can hide a wallet swap. Inspect the userscript, see which lines matter, and follow the payment on Solana.</p>
+        <p class="intro-copy">The post promised a 25% crypto bonus. The script changed the deposit wallet. Check the code before you give it access.</p>
       </div>
       <div class="intro-art"><div class="coupon" aria-label="Scam case study based on a fake 25 percent loyalty bonus">
         <div class="coupon-main"><span class="coupon-label">THE LURE</span><strong>+25<span>%</span></strong><span>Loyalty bonus</span></div>
@@ -34,7 +34,7 @@
 
     <section id="workbench" class="workbench" aria-labelledby="bench-title">
       <div class="section-head">
-        <div><h2 id="bench-title">Script workbench</h2><p>Scan before installing a Tampermonkey userscript.</p></div>
+        <div><h2 id="bench-title">Script workbench</h2><p>Inspect a Tampermonkey script or start with a real case.</p></div>
         <div class="section-aside"><span class="local-label"><i data-lucide="shield-check" aria-hidden="true"></i> Scans stay on this device</span><span class="mascot-slot" data-stop="workbench"></span></div>
       </div>
       <div class="work-grid">
@@ -45,27 +45,34 @@
             <button type="button" id="paste-source" aria-pressed="false">Paste your own</button>
           </div>
           <div class="editor-frame">
-            <div class="editor-header"><span id="file-name"></span><button type="button" id="edit-source">Edit source</button></div>
+            <div class="editor-header">
+              <span id="file-name"></span>
+              <div class="editor-tools">
+                <button type="button" id="wrap-source" aria-pressed="false" aria-controls="code-list">Wrap lines</button>
+                <button type="button" id="edit-source">Edit source</button>
+              </div>
+            </div>
             <label class="sr-only" for="source">Userscript source</label>
-            <textarea id="source" spellcheck="false" autocomplete="off" autocapitalize="off" maxlength="60000" placeholder="Paste JavaScript source here…" hidden></textarea>
+            <textarea id="source" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Paste JavaScript source here…" hidden></textarea>
             <div id="code-list" class="code-list" tabindex="0" aria-label="Source with highlighted evidence"></div>
           </div>
           <div class="scan-row">
             <button type="button" class="primary" id="scan">Scan script <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
-            <span>Local analysis. Pasted code stays here.</span>
+            <span id="source-hint">Pasted code stays here.</span>
           </div>
         </div>
         <div class="findings-pane">
           <div class="findings-head"><h3>Findings</h3><span id="finding-count" class="finding-count">—</span></div>
           <p id="scan-status" class="scan-status" role="status"></p>
           <ol id="findings" class="findings"></ol>
-          <p class="findings-note">These are code signals. A clean scan can miss hidden behavior.</p>
+          <p class="findings-note">A clean scan can miss hidden behavior.</p>
+          <a class="evidence-link" id="compare-recipient" href="#transfer" hidden>Compare the wallet addresses <i data-lucide="arrow-down" aria-hidden="true"></i></a>
           <button type="button" id="export-report" class="secondary" disabled>Download findings <i data-lucide="download" aria-hidden="true"></i></button>
         </div>
       </div>
     </section>
 
-    <section class="transfer" id="transfer" aria-labelledby="transfer-title">
+    <section class="transfer" id="transfer" tabindex="-1" aria-labelledby="transfer-title">
       <div class="section-head">
         <div><h2 id="transfer-title">Follow the payment</h2><p>Compare an independently verified recipient with the address found in the code.</p></div>
         <div class="section-aside"><span class="network-label"><svg width="18" height="16" viewBox="0 0 18 16" aria-hidden="true"><path fill="currentColor" d="M4 1h13l-3 3H1zm-3 6h13l3 3H4zm3 6h13l-3 3H1z"/></svg> Solana devnet</span><span class="mascot-slot" data-stop="transfer"></span></div>
@@ -78,17 +85,18 @@
           <div class="recipient-result" id="expected-result" hidden></div>
         </div>
         <div class="recipient observed">
-          <div class="recipient-heading"><label for="observed">Address found in code</label><span id="observed-tag" class="recipient-tag">Source evidence</span></div>
+          <div class="recipient-heading"><label id="observed-label" for="observed">Address found in code</label><span id="observed-tag" class="recipient-tag">Source evidence</span></div>
           <select id="observed" aria-describedby="observed-help"></select>
+          <output id="observed-address" class="wallet-address" aria-labelledby="observed-label" hidden></output>
           <span class="recipient-help" id="observed-help"></span>
           <div class="recipient-result" id="observed-result" hidden></div>
         </div>
       </div>
       <div class="transfer-actions">
-        <button type="button" class="primary" id="simulate">Simulate both transfers <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
+        <button type="button" class="primary" id="simulate"><span id="simulate-label">Simulate both transfers</span> <i data-lucide="arrow-up-right" aria-hidden="true"></i></button>
         <span id="transfer-status" role="status"></span>
       </div>
-      <p class="simulation-note" id="simulation-note">Two independent 0.01 SOL test transfers. Public devnet receives only the unsigned transfer messages for simulation.</p>
+      <p class="simulation-note" id="simulation-note">Both previews use 0.01 SOL. Devnet receives unsigned transfer messages, and nothing is broadcast.</p>
     </section>
 
     <section id="case-notes" class="case-notes" aria-labelledby="cases-title">

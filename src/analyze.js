@@ -20,12 +20,19 @@ function propertyName(node) {
 
 function memberName(node) {
   if (node?.type !== 'MemberExpression') return null;
-  if (node.computed && node.property.type !== 'Literal') return null;
-  return propertyName(node.property);
+  return node.computed ? literalString(node.property) : propertyName(node.property);
 }
 
-function literalString(node) {
-  return node?.type === 'Literal' && typeof node.value === 'string' ? node.value : null;
+function literalString(node, depth = 0) {
+  if (!node || depth > 12) return null;
+  if (node.type === 'Literal' && typeof node.value === 'string') return node.value;
+  if (node.type === 'TemplateLiteral' && node.expressions.length === 0) {
+    return node.quasis[0].value.cooked;
+  }
+  if (node.type !== 'BinaryExpression' || node.operator !== '+') return null;
+  const left = literalString(node.left, depth + 1);
+  const right = literalString(node.right, depth + 1);
+  return left === null || right === null ? null : left + right;
 }
 
 function field(object, key) {
@@ -55,11 +62,12 @@ function literalAddress(node) {
 export function analyze(source) {
   if (!source.trim()) return { findings: [], error: 'Paste a userscript or choose a sample.' };
   if (source.length > MAX_SOURCE_LENGTH) {
-    return { findings: [], error: 'This scan accepts up to 60,000 characters. Try a smaller excerpt.' };
+    return { findings: [], error: 'Source is over 60,000 characters. Scan a smaller excerpt.', rejected: true };
   }
 
-  if (source.split(lineBreaks, MAX_SOURCE_LINES + 1).length > MAX_SOURCE_LINES) {
-    return { findings: [], error: 'This scan accepts up to 2,500 lines. Try a smaller excerpt.' };
+  const lines = source.split(lineBreaks, MAX_SOURCE_LINES + 1);
+  if (lines.length > MAX_SOURCE_LINES) {
+    return { findings: [], error: 'Source is over 2,500 lines. Scan a smaller excerpt.', rejected: true };
   }
 
   const findings = [];
@@ -91,14 +99,13 @@ export function analyze(source) {
 
   // Walk real JavaScript comment tokens where possible. For an incomplete source,
   // only read a conventional metadata header at the beginning of the pasted text.
-  const header = source.match(/^\s*\/\/\s*==UserScript==[^\r\n]*\r?\n([\s\S]*?)^\s*\/\/\s*==\/UserScript==/m);
-  const hasLeadingHeader = header && !source.slice(0, header.index).trim();
-  if (hasLeadingHeader) {
-    const start = source.slice(0, header.index + header[0].indexOf('\n') + 1).split('\n').length;
+  const firstLine = lines.findIndex((line) => line.trim());
+  const lastLine = lines.findIndex((line, index) => index > firstLine && /^\s*\/\/\s*==\/UserScript==\s*$/.test(line));
+  if (firstLine >= 0 && lastLine > firstLine && /^\s*\/\/\s*==UserScript==\s*$/.test(lines[firstLine])) {
     const commentLines = new Set(comments.filter((entry) => entry.type === 'Line').map((entry) => entry.loc.start.line));
-    for (const [offset, row] of header[1].split('\n').entries()) {
-      const match = row.match(/^\s*\/\/\s*@(\S+)\s+(.*)$/);
-      const line = start + offset;
+    for (let index = firstLine + 1; index < lastLine; index++) {
+      const match = lines[index].match(/^\s*\/\/\s*@(\S+)\s+(.*)$/);
+      const line = index + 1;
       if (!match || (ast && !commentLines.has(line))) continue;
       const [, directive, value] = match;
       if (directive === 'require') {

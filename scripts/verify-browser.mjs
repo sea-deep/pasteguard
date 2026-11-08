@@ -22,6 +22,9 @@ try {
     assert.deepEqual(await page.evaluate(() => [innerWidth, document.documentElement.scrollWidth]), [width, width]);
   }
 
+  assert.equal(await page.locator('#wrap-source').getAttribute('aria-pressed'), 'true');
+  await page.getByRole('button', { name: 'Wrap lines' }).click();
+  assert.equal(await page.locator('#wrap-source').getAttribute('aria-pressed'), 'false');
   await page.setViewportSize({ width: 1440, height: 1050 });
   assert.ok(await page.locator('svg.lucide').count() >= 10);
   await page.getByRole('button', { name: /Network request hook/ }).click();
@@ -46,6 +49,17 @@ try {
   assert.equal(report.sourceSha256, createHash('sha256').update(script).digest('hex'));
   assert.equal(Object.hasOwn(report, 'source'), false);
   assert.equal(report.findings[0].address, REPLACEMENT);
+  assert.equal(await page.locator('#observed-address').textContent(), REPLACEMENT);
+  await page.getByRole('link', { name: 'Compare the wallet addresses' }).click();
+  assert.equal(new URL(page.url()).hash, '#transfer');
+  await page.getByRole('button', { name: 'Benign example' }).click();
+  await page.getByRole('button', { name: 'Paste your own' }).click();
+  assert.equal(await editor.inputValue(), script);
+  await editor.fill('a'.repeat(60_001));
+  await editor.press('Control+Enter');
+  assert.match(await page.locator('#scan-status').textContent(), /over 60,000/);
+  assert.equal(await page.locator('#export-report').isDisabled(), true);
+  assert.equal(await editor.isVisible(), true);
 
   await page.locator('[data-case="clipboard"]').click();
   assert.match(await page.locator('#observed-help').textContent(), /Solana.*clipboard/);
