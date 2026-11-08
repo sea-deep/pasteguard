@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Inspect Tampermonkey scripts before installing them. Follow payment-address changes into a Solana devnet transfer comparison.">
-  <meta name="theme-color" content="#151322">
+  <meta name="theme-color" content="#151311">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <title>PasteGuard — Userscript investigation</title>
 </head>
@@ -13,7 +13,7 @@
   <header class="topbar">
     <div class="shell topbar-inner">
       <a class="brand" href="./" aria-label="PasteGuard home">
-        <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#302746"/><path fill="none" stroke="#c0d9ff" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" d="M16 6.8 24 10v6c0 4.7-3.1 7.7-8 9.8-4.9-2.1-8-5.1-8-9.8v-6zM13 16l2 2 4-4"/></svg>
+        <svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#352219"/><path fill="none" stroke="#ffb17d" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" d="M16 6.8 24 10v6c0 4.7-3.1 7.7-8 9.8-4.9-2.1-8-5.1-8-9.8v-6zM13 16l2 2 4-4"/></svg>
         <span>PasteGuard<span class="brand-period">.</span></span>
       </a>
       <nav aria-label="Resources"><a href="#case-notes">Scam cases</a><a href="#extension">Chrome extension</a><a class="source-link" href="https://github.com/sea-deep/pasteguard" target="_blank" rel="noopener noreferrer">Source <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></nav>
@@ -22,19 +22,28 @@
 
   <main class="shell">
     <section class="intro" id="start" aria-labelledby="title">
-      <div>
-        <h1 id="title">Before you paste.</h1>
-        <p class="intro-copy">The post promised a 25% crypto bonus. The script changed the deposit wallet. Check the code before you give it access.</p>
+      <div class="intro-text">
+        <h1 id="title">How a fake bonus <span>steals your crypto.</span></h1>
+        <p class="intro-copy">A real campaign promised 25% extra on a crypto swap. It asked people to install a browser script that quietly changed who got paid.</p>
+        <a class="primary intro-action" href="#workbench">Inspect the example <i data-lucide="arrow-down" aria-hidden="true"></i></a>
       </div>
-      <div class="intro-art"><div class="coupon" aria-label="Scam case study based on a fake 25 percent loyalty bonus">
-        <div class="coupon-main"><span class="coupon-label">THE LURE</span><strong>+25<span>%</span></strong><span>Loyalty bonus</span></div>
-        <div class="coupon-stub"><span>CASE PG–01</span><span class="coupon-stamp">FAKE</span></div>
-      </div><span class="mascot-slot" data-stop="start"></span></div>
+      <figure class="intro-exhibit">
+        <div class="exhibit-head"><span><b class="pixel">01</b> The fake bonus screen</span><span class="mascot-slot" data-stop="start"></span></div>
+        <a href="./evidence/bonus.webp" target="_blank" rel="noopener" aria-label="Open the fake bonus screen captured by Cisco Talos">
+          <img src="./evidence/bonus.webp" alt="A fake loyalty bonus prompt injected into a cryptocurrency exchange page" width="900" height="360">
+        </a>
+        <figcaption>Screenshot from the campaign investigation <a href="https://blog.talosintelligence.com/clickfix-moves-into-the-browser/" target="_blank" rel="noopener noreferrer">Cisco Talos <i data-lucide="external-link" aria-hidden="true"></i></a></figcaption>
+      </figure>
+      <ol class="attack-steps" aria-label="How the scam works">
+        <li><span class="pixel" aria-hidden="true">01</span><div><h2>The bait</h2><p>A Pastebin comment claims to have found a way to get extra crypto on a swap.</p></div></li>
+        <li><span class="pixel" aria-hidden="true">02</span><div><h2>The install</h2><p>It tells you to paste code into Tampermonkey, a browser extension that can run scripts and change web pages.</p></div></li>
+        <li><span class="pixel" aria-hidden="true">03</span><div><h2>The wallet swap</h2><p>The code replaces the exchange’s deposit address with one the attacker controls. Your payment goes wherever that address points.</p></div></li>
+      </ol>
     </section>
 
     <section id="workbench" class="workbench" aria-labelledby="bench-title">
       <div class="section-head">
-        <div><h2 id="bench-title">Script workbench</h2><p>Inspect a Tampermonkey script or start with a real case.</p></div>
+        <div><h2 id="bench-title">Script workbench</h2><p>Paste a script or scan our reconstruction to see which lines can change a payment.</p></div>
         <div class="section-aside"><span class="local-label"><i data-lucide="shield-check" aria-hidden="true"></i> Scans stay on this device</span><span class="mascot-slot" data-stop="workbench"></span></div>
       </div>
       <div class="work-grid">
@@ -101,37 +110,37 @@
 
     <section id="case-notes" class="case-notes" aria-labelledby="cases-title">
       <div class="section-head">
-        <div><h2 id="cases-title">The scam files</h2><p>Real campaign screenshots, plus harmless reconstructions to inspect.</p></div>
+        <div><h2 id="cases-title">The scam files</h2><p>Four documented attacks. Each file pairs the original evidence with a safe example to scan.</p></div>
         <span class="mascot-slot" data-stop="case-notes"></span>
       </div>
       <div class="case-grid">
         <article class="case-file">
-          <div class="case-meta"><span>01 / Fake swap bonus</span><i data-lucide="badge-percent" aria-hidden="true"></i></div>
+          <div class="case-meta"><span class="case-number pixel">01</span><span class="case-kind">Fake swap bonus</span></div>
           <a class="case-image bonus-image" href="./evidence/bonus.webp" target="_blank" rel="noopener" aria-label="Open the injected bonus screen"><img src="./evidence/bonus.webp" alt="Fake loyalty bonus dialog injected into a Bitcoin swap page" loading="lazy" width="900" height="360"></a>
-          <h3>The loyalty bonus trap</h3>
+          <div class="case-body"><h3>The loyalty bonus trap</h3>
           <p>A Pastebin comment promised higher swap payouts. The userscript changed the wallet address and showed a fake bonus.</p>
-          <details><summary>See the Pastebin lure</summary><a href="./evidence/pastebin.webp" target="_blank" rel="noopener"><img src="./evidence/pastebin.webp" alt="Pastebin comment claiming to have leaked an exploit, with the link redacted" loading="lazy" width="900" height="177"></a></details>
+          <details><summary>See the Pastebin lure</summary><a href="./evidence/pastebin.webp" target="_blank" rel="noopener"><img src="./evidence/pastebin.webp" alt="Pastebin comment claiming to have leaked an exploit, with the link redacted" loading="lazy" width="900" height="177"></a></details></div>
           <div class="case-links"><button type="button" data-case="scam">Inspect example <i data-lucide="arrow-up-right" aria-hidden="true"></i></button><a href="https://blog.talosintelligence.com/clickfix-moves-into-the-browser/" target="_blank" rel="noopener noreferrer">Cisco Talos <i data-lucide="external-link" aria-hidden="true"></i></a></div>
         </article>
         <article class="case-file">
-          <div class="case-meta"><span>02 / Clipboard hijack</span><i data-lucide="clipboard-copy" aria-hidden="true"></i></div>
+          <div class="case-meta"><span class="case-number pixel">02</span><span class="case-kind">Clipboard hijack</span></div>
           <a class="case-image" href="./evidence/clipboard.webp" target="_blank" rel="noopener" aria-label="Open the fake Solana sniper bot screenshot"><img src="./evidence/clipboard.webp" alt="Phishing site offering a free Solana sniper and trading bot download" loading="lazy" width="900" height="466"></a>
-          <h3>The free Solana sniper</h3>
-          <p>A fake trading tool used inflated social proof to spread a desktop program that replaced wallet addresses on the clipboard.</p>
+          <div class="case-body"><h3>The free Solana sniper</h3>
+          <p>A fake trading tool used inflated social proof to spread a desktop program that replaced wallet addresses on the clipboard.</p></div>
           <div class="case-links"><button type="button" data-case="clipboard">Inspect browser analogue <i data-lucide="arrow-up-right" aria-hidden="true"></i></button><a href="https://research.checkpoint.com/2026/from-stars-to-upvotes-fake-reputation-fueling-a-crypto-clipboard-hijacker/" target="_blank" rel="noopener noreferrer">Check Point Research <i data-lucide="external-link" aria-hidden="true"></i></a></div>
         </article>
         <article class="case-file">
-          <div class="case-meta"><span>03 / Fake compiler</span><i data-lucide="terminal" aria-hidden="true"></i></div>
+          <div class="case-meta"><span class="case-number pixel">03</span><span class="case-kind">Fake compiler</span></div>
           <a class="case-image" href="./evidence/bot2.webp" target="_blank" rel="noopener" aria-label="Open the fake compiler tutorial screenshot"><img src="./evidence/bot2.webp" alt="Video tutorial showing a fake compiler alongside a MetaMask transaction prompt" loading="lazy" width="900" height="492"></a>
-          <h3>The AI arbitrage bot</h3>
-          <p>A tutorial sent viewers to a fake Solidity compiler. It deployed different bytecode that forwarded their ETH.</p>
+          <div class="case-body"><h3>The AI arbitrage bot</h3>
+          <p>A tutorial sent viewers to a fake Solidity compiler. It deployed different bytecode that forwarded their ETH.</p></div>
           <div class="case-links"><button type="button" data-case="bot">Inspect browser analogue <i data-lucide="arrow-up-right" aria-hidden="true"></i></button><a href="https://www.trmlabs.com/resources/blog/fake-ai-trading-bots-are-getting-victims-to-build-their-own-drainers" target="_blank" rel="noopener noreferrer">TRM Labs <i data-lucide="external-link" aria-hidden="true"></i></a></div>
         </article>
         <article class="case-file">
-          <div class="case-meta"><span>04 / Recovery phishing</span><i data-lucide="key-round" aria-hidden="true"></i></div>
+          <div class="case-meta"><span class="case-number pixel">04</span><span class="case-kind">Recovery phishing</span></div>
           <a class="case-image recovery-image" href="./evidence/recovery.webp" target="_blank" rel="noopener" aria-label="Open the fake wallet recovery screenshot"><img src="./evidence/recovery.webp" alt="Phishing window in a fake Ledger app asking for wallet recovery words" loading="lazy" width="768" height="831"></a>
-          <h3>The wallet “security check”</h3>
-          <p>A fake Ledger app prompted users to verify their recovery phrases and sent the entered words to an attacker.</p>
+          <div class="case-body"><h3>The wallet “security check”</h3>
+          <p>A fake Ledger app prompted users to verify their recovery phrases and sent the entered words to an attacker.</p></div>
           <div class="case-links"><button type="button" data-case="recovery">Inspect browser analogue <i data-lucide="arrow-up-right" aria-hidden="true"></i></button><a href="https://securelist.com/fakewallet-cryptostealer-ios-app-store/119474/" target="_blank" rel="noopener noreferrer">Securelist <i data-lucide="external-link" aria-hidden="true"></i></a></div>
         </article>
       </div>
@@ -147,17 +156,17 @@
     </footer>
     <div id="pip" class="mascot" aria-hidden="true">
       <svg viewBox="0 0 64 60" width="53" height="50" fill="none">
-        <path d="M46 45c6 6 13 0 12-6" stroke="#221c37" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M19 49c0-6 4-12 13-12 7 0 12 5 12 12v5H19z" fill="#ad98e8" stroke="#221c37" stroke-width="2"/>
-        <circle cx="16" cy="21" r="9" fill="#ad98e8" stroke="#221c37" stroke-width="2.1"/><circle cx="47" cy="21" r="9" fill="#ad98e8" stroke="#221c37" stroke-width="2.1"/>
-        <path d="M14 26c0-11 7-17 18-17s18 7 18 17c0 11-8 17-18 17s-18-6-18-17Z" fill="#ad98e8" stroke="#221c37" stroke-width="2.1"/>
-        <path d="M18 31c0-7 5-12 10-11 2 0 3 1 4 2 1-1 2-2 4-2 6-1 10 4 10 11 0 6-6 9-14 9s-14-3-14-9Z" fill="#e9dfff"/>
-        <path d="M17 14c3-7 9-11 15-11 5 0 10 3 13 9l-10 3-7-1-11 3z" fill="#c0d9ff" stroke="#221c37" stroke-width="2" stroke-linejoin="round"/>
-        <path d="M19 17c9-1 18-2 28-1" stroke="#221c37" stroke-width="2.2" stroke-linecap="round"/>
-        <circle cx="25" cy="28" r="1.8" fill="#221c37"/><circle cx="38" cy="28" r="1.8" fill="#221c37"/>
-        <path d="M29 33c1.5 2.3 4.5 2.3 6 0" stroke="#221c37" stroke-width="1.7" stroke-linecap="round"/>
-        <circle cx="43" cy="34" r="2" fill="#f4a0ba"/><circle cx="21" cy="34" r="2" fill="#f4a0ba"/>
-        <path d="m22 50-3 4m21-4 3 4" stroke="#221c37" stroke-width="2.1" stroke-linecap="round"/>
+        <path d="M46 45c6 6 13 0 12-6" stroke="#25180f" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M19 49c0-6 4-12 13-12 7 0 12 5 12 12v5H19z" fill="#bd9a79" stroke="#25180f" stroke-width="2"/>
+        <circle cx="16" cy="21" r="9" fill="#bd9a79" stroke="#25180f" stroke-width="2.1"/><circle cx="47" cy="21" r="9" fill="#bd9a79" stroke="#25180f" stroke-width="2.1"/>
+        <path d="M14 26c0-11 7-17 18-17s18 7 18 17c0 11-8 17-18 17s-18-6-18-17Z" fill="#bd9a79" stroke="#25180f" stroke-width="2.1"/>
+        <path d="M18 31c0-7 5-12 10-11 2 0 3 1 4 2 1-1 2-2 4-2 6-1 10 4 10 11 0 6-6 9-14 9s-14-3-14-9Z" fill="#ffe5c5"/>
+        <path d="M17 14c3-7 9-11 15-11 5 0 10 3 13 9l-10 3-7-1-11 3z" fill="#ffb17d" stroke="#25180f" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M19 17c9-1 18-2 28-1" stroke="#25180f" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="25" cy="28" r="1.8" fill="#25180f"/><circle cx="38" cy="28" r="1.8" fill="#25180f"/>
+        <path d="M29 33c1.5 2.3 4.5 2.3 6 0" stroke="#25180f" stroke-width="1.7" stroke-linecap="round"/>
+        <circle cx="43" cy="34" r="2" fill="#f88b73"/><circle cx="21" cy="34" r="2" fill="#f88b73"/>
+        <path d="m22 50-3 4m21-4 3 4" stroke="#25180f" stroke-width="2.1" stroke-linecap="round"/>
       </svg>
       <span>Pip</span>
     </div>

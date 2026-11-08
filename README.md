@@ -50,4 +50,4 @@ Browser verification uses Playwright. Run `npx playwright install chromium`, the
 
 - Kaspersky Securelist, [FakeWallet crypto stealer](https://securelist.com/fakewallet-cryptostealer-ios-app-store/119474/). The recovery prompt shows how a fake wallet asked victims for their seed phrase.
 
-The demo is narrated with ElevenLabs. Campaign screenshots are credited to their respective publishers and are excluded from the project code license. Outfit, DM Sans, and JetBrains Mono are bundled locally via Fontsource. Interface icons use Lucide.
+The demo is narrated with ElevenLabs. Campaign screenshots are credited to their respective publishers and are excluded from the project code license. Geist Serif, Sans, Mono, and Pixel are bundled locally from Vercel’s Geist package. Interface icons use Lucide.

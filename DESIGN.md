@@ -1,7 +1,5 @@
 # Design
 
-PasteGuard looks like a night-shift investigation desk. Deep violet anchors the canvas, ice blue marks actions, and coral identifies a risk or recipient mismatch. Mint is reserved for local privacy and successful Solana simulations. The coupon introduces the case with a bright paper surface against the dark workspace. Evidence screenshots keep their original colors.
+PasteGuard opens as a short case briefing. The first screen explains the bait, the browser permission, and the wallet substitution. An authentic campaign screenshot sits beside that explanation. The workbench is one instrument split between code and findings. The case library is an index of numbered exhibits with a screenshot, explanation, and next action in each row.
 
-Outfit sets titles, DM Sans handles interface text, and JetBrains Mono is used for source, line numbers, and wallet addresses. The workbench pairs code with an ordered finding list, and the two payment destinations get equal space. Mobile stacks the same reading order with touch-friendly controls and wrapped source.
-
-The palette takes cues from Pinterest’s Cool Blue and Plum Noir. Mobbin’s dashboard research informed the separation between the working area and reference material.
+Geist Serif sets the main headlines, Geist Sans carries interface text, Geist Mono carries source, and Geist Pixel Square marks case numbers. Warm black and newsprint anchor the page. Orange marks an action or a threat, while verified simulation results use pale green. Evidence screenshots retain their original colors.

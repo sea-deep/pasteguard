@@ -1,14 +1,11 @@
-import '@fontsource-variable/outfit/wght.css';
-import { ArrowDown, ArrowUpRight, BadgePercent, ClipboardCopy, createIcons, Download, ExternalLink, KeyRound, ShieldCheck, Terminal } from 'lucide';
-import '@fontsource-variable/dm-sans/wght.css';
-import '@fontsource-variable/jetbrains-mono/wght.css';
+import { ArrowDown, ArrowUpRight, createIcons, Download, ExternalLink, ShieldCheck } from 'lucide';
 import './style.css';
 import { analyze, lineBreaks, MAX_SOURCE_LINES } from './analyze.js';
 import { EXPECTED, SAMPLES } from './fixtures.js';
 import { isRecipient, simulatePair } from './solana.js';
 import { moveMascot } from './mascot.js';
 
-createIcons({ icons: { ArrowDown, ArrowUpRight, BadgePercent, ClipboardCopy, Download, ExternalLink, KeyRound, ShieldCheck, Terminal } });
+createIcons({ icons: { ArrowDown, ArrowUpRight, Download, ExternalLink, ShieldCheck } });
 
 const $ = (id) => document.getElementById(id);
 const source = $('source');
